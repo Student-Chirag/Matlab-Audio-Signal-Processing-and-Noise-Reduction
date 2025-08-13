@@ -1,0 +1,30 @@
+clc;
+clear all;
+close all;
+% reading the origianl signal
+fs = 44100;
+[y,fs] = audioread('nokia.mp3');
+y = y(:, 1);
+% Calculate time vector
+t = (0:length(y)-1)/fs;
+
+noise_level_dB = 10; % Noise level in dB
+signal_power = mean(y.^2); % Power of the original signal
+noise_power = signal_power / (10^(noise_level_dB / 10)); % Noise power calculation
+noise = sqrt(noise_power).*randn(size(y)); % Generate Gaussian noise
+y_noisy = y + noise; % Add noise to the signal
+  
+ % Plot waveform
+
+subplot(3, 1, 2);
+plot(t, y_noisy);
+title('Noisy Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on
+ 
+
+
+% playing the original song
+ p = audioplayer(y_noisy,fs);
+  play(p);

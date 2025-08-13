@@ -1,0 +1,37 @@
+clc; 
+clear all; 
+close all;
+
+
+fs = 44100; % Sampling frequency
+[y, fs] = audioread('nokia.mp3'); % Load the audio signal
+y = y(:, 1); % Use only one channel if stereo
+t = (0:length(y)-1) / fs; % Time vector
+
+% Add noise to the signal
+noise_level_dB = 10; % Noise level in dB
+signal_power = mean(y.^2); % Power of the original signal
+noise_power = signal_power / (10^(noise_level_dB / 10)); % Noise power calculation
+noise = sqrt(noise_power) * randn(size(y)); % Generate Gaussian noise
+y_noisy = y + noise; % Add noise to the signal
+
+
+% Remove noise using a low-pass filter
+fc = 20000; % Cutoff frequency (Hz)
+%[b, a] = butter(6, fc / (fs / 2), 'low'); % 6th order Butterworth low-pass filter
+%y_filtered = filter(b, a, y_noisy); % Apply the filter
+[b, a] = butter(10, fc / (fs / 2), 'low'); % 10th-order Butterworth filter
+y_filtered = filter(b, a, y_noisy);
+
+% Filtered signal
+subplot(3, 1, 3);
+plot(t, y_filtered);
+title('Filtered Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+
+disp('Playing filtered signal...');
+
+p = audioplayer(y_filtered,fs);
+play(p);

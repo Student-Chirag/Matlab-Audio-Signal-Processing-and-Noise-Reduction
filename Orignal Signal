@@ -1,0 +1,21 @@
+clc; 
+clear all; 
+close all;
+
+% Reading the original signal
+fs = 44100; % Sampling frequency
+[y, fs] = audioread('nokia.mp3'); % Load the audio signal
+y = y(:, 1); % Use only one channel if stereo
+t = (0:length(y)-1) / fs; 
+
+% Original signal
+subplot(3, 1, 1);
+plot(t, y);
+title('Original Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
+
+% playing the original song
+p = audioplayer(y,fs);
+play(p)
